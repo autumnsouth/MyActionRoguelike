@@ -32,16 +32,39 @@ void AMyCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AMyCharacter::MoveForward(float value)
+void AMyCharacter::MoveForward(float val)
 {
-	AddMovementInput(GetActorForwardVector(), value);
+	FRotator ControlRot = GetControlRotation();
+	ControlRot.Pitch = 0.0f;
+	ControlRot.Roll = 0.0f;
+	AddMovementInput(ControlRot.Vector(), val);
 }
 
-void AMyCharacter::TurnRight(float value)
+void AMyCharacter::TurnRight(float val)
 {
-	AddMovementInput(GetActorRightVector(), value);
+	FRotator ControlRot = GetControlRotation();
+	//ControlRot.Pitch = 0.0f;
+	//ControlRot.Roll = 0.0f;
+
+	// x - Forward
+	// y - Right
+	// z - Up
+	FVector RightVector = FRotationMatrix(ControlRot).GetScaledAxis(EAxis::Y);
+
+	AddMovementInput(RightVector, val);
 }
 
+void AMyCharacter::PrimaryAttack()
+{
+	FVector Handlocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	
+	FTransform SpawnTM = FTransform(GetControlRotation(),Handlocation);
+	
+	FActorSpawnParameters SpawnParas;
+	SpawnParas.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM , SpawnParas);
+}
 
 // Called every frame
 void AMyCharacter::Tick(float DeltaTime)
@@ -54,9 +77,11 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis("Moveforward", this, &AMyCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveForward", this, &AMyCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMyCharacter::TurnRight);
 
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+
+	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &AMyCharacter::PrimaryAttack);
 }

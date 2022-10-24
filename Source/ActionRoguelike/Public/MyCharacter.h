@@ -13,6 +13,10 @@ UCLASS()
 class ACTIONROGUELIKE_API AMyCharacter : public ACharacter
 {
 	GENERATED_BODY()
+	
+protected:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> ProjectileClass;
 
 public:
 	// Sets default values for this character's properties
@@ -29,8 +33,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	void MoveForward(float value);
-	void TurnRight(float value);
+	void MoveForward(float val);
+	void TurnRight(float val);
+	void PrimaryAttack();
 
 public:	
 	// Called every frame
