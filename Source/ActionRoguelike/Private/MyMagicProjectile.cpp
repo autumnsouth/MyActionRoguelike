@@ -16,10 +16,10 @@ AMyMagicProjectile::AMyMagicProjectile()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
+	SphereComp->SetCollisionProfileName("MagicProjectile");
 	SphereComp->SetCollisionObjectType(ECC_WorldDynamic);
 	SphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
 	SphereComp->SetCollisionResponseToChannel(ECC_Pawn,ECR_Overlap);
-	SphereComp->SetCollisionProfileName("MagicProjectile");
 	RootComponent = SphereComp;
 
 	EffectComp = CreateDefaultSubobject<UParticleSystemComponent>("EffectComp");
@@ -42,3 +42,4 @@ void AMyMagicProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
+

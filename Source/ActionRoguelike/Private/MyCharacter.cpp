@@ -57,13 +57,13 @@ void AMyCharacter::TurnRight(float val)
 void AMyCharacter::PrimaryAttack()
 {
 	FVector Handlocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	
-	FTransform SpawnTM = FTransform(GetControlRotation(),Handlocation);
-	
+
+	FTransform SpawnTM = FTransform(GetControlRotation(), Handlocation);
+
 	FActorSpawnParameters SpawnParas;
 	SpawnParas.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM , SpawnParas);
+
+	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParas);
 }
 
 // Called every frame
@@ -84,4 +84,5 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &AMyCharacter::PrimaryAttack);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 }
